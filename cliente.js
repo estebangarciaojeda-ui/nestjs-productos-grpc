@@ -6,7 +6,10 @@ const PROTO_PATH = path.join(import.meta.dirname, 'src', 'productos.proto');
 const packageDef = protoLoader.loadSync(PROTO_PATH, { keepCase: true, longs: String, enums: String, defaults: true });
 const proto = grpc.loadPackageDefinition(packageDef).productos;
 
-const client = new proto.ProductoService('localhost:5000', grpc.credentials.createInsecure());
+// Local: sin variables (localhost:5000, sin TLS). En Koyeb: GRPC_URL=<servicio>.koyeb.app:443 GRPC_TLS=true
+const url = process.env.GRPC_URL ?? 'localhost:5000';
+const credenciales = process.env.GRPC_TLS === 'true' ? grpc.credentials.createSsl() : grpc.credentials.createInsecure();
+const client = new proto.ProductoService(url, credenciales);
 
 const unary = (id) =>
   new Promise((resolve) => {
