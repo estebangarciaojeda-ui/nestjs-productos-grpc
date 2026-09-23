@@ -112,3 +112,23 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Despliegue en Azure (gRPC público)
+
+El microservicio corre en **Azure Container Apps** (México Central, transporte HTTP/2, escala de 0 a 1 réplica):
+
+`productos-grpc.purplesky-5802350a.mexicocentral.azurecontainerapps.io:443` (con TLS)
+
+Probar el cliente contra Azure:
+
+```bash
+GRPC_URL=productos-grpc.purplesky-5802350a.mexicocentral.azurecontainerapps.io:443 GRPC_TLS=true node cliente.js
+```
+
+En PowerShell:
+
+```powershell
+$env:GRPC_URL="productos-grpc.purplesky-5802350a.mexicocentral.azurecontainerapps.io:443"; $env:GRPC_TLS="true"; node cliente.js
+```
+
+La primera llamada tras un rato sin uso puede tardar unos segundos (el servicio escala a cero). La imagen se construye con GitHub Actions (`.github/workflows/imagen-azure.yml`) y se sube a Azure Container Registry.
